@@ -1,5 +1,4 @@
 "use client";
-// deploy trigger
 
 import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabase";
@@ -12,7 +11,20 @@ export default function Dashboard() {
 
   const user_id = "demo-user";
 
-  // 🔹 Fetch scores
+  // 🔹 fake subscription data
+  const subscription = {
+    status: "Active",
+    renewal: "2026-04-30",
+  };
+
+  // 🔹 charity
+  const [charity, setCharity] = useState("Red Cross");
+  const [percentage, setPercentage] = useState(10);
+
+  // 🔹 winnings
+  const winnings = matches >= 3 ? 1000 : 0;
+
+  // fetch scores
   const fetchScores = async () => {
     const { data } = await supabase
       .from("scores")
@@ -27,7 +39,7 @@ export default function Dashboard() {
     fetchScores();
   }, []);
 
-  // 🔹 Submit score with 5-score limit
+  // submit score
   const handleSubmit = async () => {
     if (!score) return;
 
@@ -37,33 +49,26 @@ export default function Dashboard() {
       .eq("user_id", user_id)
       .order("date", { ascending: true });
 
-    // delete oldest if already 5
     if (data && data.length >= 5) {
       await supabase.from("scores").delete().eq("id", data[0].id);
     }
 
-    // insert new score
     await supabase.from("scores").insert([
-      {
-        user_id,
-        score: parseInt(score),
-      },
+      { user_id, score: parseInt(score) },
     ]);
 
     setScore("");
     fetchScores();
   };
 
-  // 🔥 DRAW FUNCTION
+  // draw
   const runDraw = async () => {
     if (scores.length < 5) {
       alert("Enter 5 scores first!");
       return;
     }
 
-    // generate 5 UNIQUE random numbers
     const numbersSet = new Set<number>();
-
     while (numbersSet.size < 5) {
       numbersSet.add(Math.floor(Math.random() * 45) + 1);
     }
@@ -72,15 +77,10 @@ export default function Dashboard() {
 
     setDrawNumbers(randomNumbers);
 
-    // save draw
     await supabase.from("draws").insert([
-      {
-        numbers: randomNumbers,
-        status: "completed",
-      },
+      { numbers: randomNumbers, status: "completed" },
     ]);
 
-    // match logic
     const userScores = scores.map((s) => s.score);
 
     const matchCount = randomNumbers.filter((num) =>
@@ -92,73 +92,93 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-black text-white p-10">
-      {/* 🔥 HEADER */}
       <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
 
-      {/* ✅ ADMIN BUTTON ADDED */}
+      {/* Admin Button */}
       <a
         href="/admin"
-        className="bg-red-500 px-4 py-2 rounded mb-6 inline-block hover:bg-red-600"
+        className="bg-red-500 px-4 py-2 rounded mb-6 inline-block"
       >
-        Go to Admin Panel ⚙️
+        Admin Panel ⚙️
       </a>
 
-      {/* Input Section */}
-      <div className="bg-zinc-900 p-6 rounded-lg max-w-md mb-6">
-        <h2 className="text-xl mb-4">Enter Golf Score</h2>
+      {/* 🔥 Subscription */}
+      <div className="bg-zinc-900 p-4 mb-4 rounded">
+        <h2>Subscription</h2>
+        <p>Status: {subscription.status}</p>
+        <p>Renewal: {subscription.renewal}</p>
+      </div>
 
+      {/* 🔥 Charity */}
+      <div className="bg-zinc-900 p-4 mb-4 rounded">
+        <h2>Charity Selection</h2>
+
+        <select
+          value={charity}
+          onChange={(e) => setCharity(e.target.value)}
+          className="text-black p-2 mb-2"
+        >
+          <option>Red Cross</option>
+          <option>UNICEF</option>
+          <option>WWF</option>
+        </select>
+
+        <input
+          type="number"
+          value={percentage}
+          onChange={(e) => setPercentage(Number(e.target.value))}
+          className="text-black p-2"
+        />
+        <p>{percentage}% goes to {charity}</p>
+      </div>
+
+      {/* 🔥 Score Input */}
+      <div className="bg-zinc-900 p-4 mb-4 rounded">
         <input
           type="number"
           value={score}
           onChange={(e) => setScore(e.target.value)}
-          placeholder="Enter score (1-45)"
-          className="w-full p-2 text-black rounded mb-4"
+          className="text-black p-2"
         />
-
-        <button
-          onClick={handleSubmit}
-          className="bg-green-500 px-4 py-2 rounded hover:bg-green-600"
-        >
-          Submit Score
+        <button onClick={handleSubmit} className="bg-green-500 px-4 py-2 ml-2">
+          Submit
         </button>
       </div>
 
-      {/* Scores Section */}
-      <div className="bg-zinc-900 p-6 rounded-lg max-w-md mb-6">
-        <h2 className="text-xl mb-4">Your Scores</h2>
-
-        {scores.length === 0 ? (
-          <p>No scores yet</p>
-        ) : (
-          scores.map((s) => (
-            <div key={s.id} className="mb-1">
-              Score: {s.score}
-            </div>
-          ))
-        )}
+      {/* 🔥 Scores */}
+      <div className="bg-zinc-900 p-4 mb-4 rounded">
+        <h2>Your Scores</h2>
+        {scores.map((s) => (
+          <div key={s.id}>{s.score}</div>
+        ))}
       </div>
 
-      {/* Draw Button */}
-      <button
-        onClick={runDraw}
-        className="bg-blue-500 px-6 py-3 rounded mb-6 hover:bg-blue-600"
-      >
+      {/* 🔥 Participation */}
+      <div className="bg-zinc-900 p-4 mb-4 rounded">
+        <h2>Participation</h2>
+        <p>Total Entries: {scores.length}</p>
+        <p>Next Draw: Upcoming</p>
+      </div>
+
+      {/* 🔥 Draw */}
+      <button onClick={runDraw} className="bg-blue-500 px-6 py-3 mb-4">
         Run Draw 🎯
       </button>
 
-      {/* Draw Result */}
+      {/* 🔥 Result */}
       {drawNumbers.length > 0 && (
-        <div className="bg-zinc-900 p-6 rounded-lg max-w-md">
-          <h2 className="text-xl mb-4">Draw Result</h2>
-
+        <div className="bg-zinc-900 p-4 mb-4 rounded">
           <p>Numbers: {drawNumbers.join(", ")}</p>
-          <p className="mt-2">Matches: {matches}</p>
-
-          {matches >= 3 && (
-            <p className="text-green-400 mt-2">🎉 You Won!</p>
-          )}
+          <p>Matches: {matches}</p>
         </div>
       )}
+
+      {/* 🔥 Winnings */}
+      <div className="bg-zinc-900 p-4 rounded">
+        <h2>Winnings</h2>
+        <p>Total Won: ₹{winnings}</p>
+        <p>Status: {winnings > 0 ? "Processing" : "No winnings"}</p>
+      </div>
     </div>
   );
 }
