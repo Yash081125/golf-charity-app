@@ -54,7 +54,7 @@ export default function Dashboard() {
     fetchScores();
   };
 
-  // 🔥 DRAW FUNCTION (UPDATED)
+  // 🔥 DRAW FUNCTION
   const runDraw = async () => {
     if (scores.length < 5) {
       alert("Enter 5 scores first!");
@@ -72,7 +72,7 @@ export default function Dashboard() {
 
     setDrawNumbers(randomNumbers);
 
-    // ✅ SAVE DRAW IN DATABASE
+    // save draw
     await supabase.from("draws").insert([
       {
         numbers: randomNumbers,
@@ -92,7 +92,16 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-black text-white p-10">
+      {/* 🔥 HEADER */}
       <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+
+      {/* ✅ ADMIN BUTTON ADDED */}
+      <a
+        href="/admin"
+        className="bg-red-500 px-4 py-2 rounded mb-6 inline-block hover:bg-red-600"
+      >
+        Go to Admin Panel ⚙️
+      </a>
 
       {/* Input Section */}
       <div className="bg-zinc-900 p-6 rounded-lg max-w-md mb-6">
