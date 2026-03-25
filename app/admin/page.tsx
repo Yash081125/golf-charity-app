@@ -20,7 +20,13 @@ export default function AdminPage() {
     }
   };
 
-  // fetch scores
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setEmail("");
+    setPassword("");
+  };
+
+  // 🔹 Fetch scores
   const fetchScores = async () => {
     const { data } = await supabase
       .from("scores")
@@ -30,7 +36,7 @@ export default function AdminPage() {
     if (data) setScores(data);
   };
 
-  // fetch draws
+  // 🔹 Fetch draws
   const fetchDraws = async () => {
     const { data } = await supabase
       .from("draws")
@@ -47,7 +53,7 @@ export default function AdminPage() {
     }
   }, [isLoggedIn]);
 
-  // run draw
+  // 🔥 Run Draw
   const runDraw = async () => {
     const numbersSet = new Set<number>();
 
@@ -64,7 +70,7 @@ export default function AdminPage() {
       },
     ]);
 
-    alert("Draw executed!");
+    alert("Draw executed successfully!");
     fetchDraws();
   };
 
@@ -73,7 +79,7 @@ export default function AdminPage() {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="bg-zinc-900 p-6 rounded w-80">
-          <h1 className="text-xl mb-4">Admin Login</h1>
+          <h1 className="text-xl mb-4 text-center">Admin Login</h1>
 
           <input
             type="email"
@@ -93,7 +99,7 @@ export default function AdminPage() {
 
           <button
             onClick={handleLogin}
-            className="bg-blue-500 w-full py-2 rounded"
+            className="bg-blue-500 w-full py-2 rounded hover:bg-blue-600"
           >
             Login
           </button>
@@ -105,31 +111,61 @@ export default function AdminPage() {
   // 🔥 ADMIN PANEL UI
   return (
     <div className="min-h-screen bg-black text-white p-10">
-      <h1 className="text-3xl font-bold mb-6">Admin Panel</h1>
+      {/* HEADER */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Admin Panel</h1>
 
-      <button
-        onClick={runDraw}
-        className="bg-blue-500 px-6 py-3 rounded mb-6"
-      >
-        Run Draw 🎯
-      </button>
-
-      <div className="bg-zinc-900 p-6 rounded mb-6">
-        <h2 className="text-xl mb-4">All Scores</h2>
-        {scores.map((s) => (
-          <div key={s.id}>
-            {s.user_id} → {s.score}
-          </div>
-        ))}
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 px-4 py-2 rounded hover:bg-red-600"
+        >
+          Logout
+        </button>
       </div>
 
+      {/* DESCRIPTION */}
+      <p className="text-gray-400 mb-6">
+        Manage system operations, monitor scores, and control draw execution.
+      </p>
+
+      {/* DRAW CONTROL */}
+      <div className="mb-6">
+        <button
+          onClick={runDraw}
+          className="bg-blue-500 px-6 py-3 rounded hover:bg-blue-600"
+        >
+          Run Draw 🎯
+        </button>
+      </div>
+
+      {/* SCORES */}
+      <div className="bg-zinc-900 p-6 rounded mb-6">
+        <h2 className="text-xl mb-4">All User Scores</h2>
+
+        {scores.length === 0 ? (
+          <p>No scores available</p>
+        ) : (
+          scores.map((s) => (
+            <div key={s.id} className="mb-1">
+              {s.user_id} → {s.score}
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* DRAWS */}
       <div className="bg-zinc-900 p-6 rounded">
         <h2 className="text-xl mb-4">Draw History</h2>
-        {draws.map((d) => (
-          <div key={d.id}>
-            {d.numbers.join(", ")} ({d.status})
-          </div>
-        ))}
+
+        {draws.length === 0 ? (
+          <p>No draws yet</p>
+        ) : (
+          draws.map((d) => (
+            <div key={d.id} className="mb-1">
+              {d.numbers.join(", ")} ({d.status})
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
