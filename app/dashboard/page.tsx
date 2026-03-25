@@ -90,57 +90,43 @@ export default function Dashboard() {
       {/* HEADER */}
       <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
 
-      {/* ADMIN BUTTON */}
-      <a
-        href="/admin"
-        className="bg-red-500 px-4 py-2 rounded mb-6 inline-block hover:bg-red-600"
-      >
-        Go to Admin Panel ⚙️
-      </a>
+      {/* NAV BUTTONS */}
+      <div className="mb-6 flex gap-3">
+        <a
+          href="/admin"
+          className="bg-red-500 px-4 py-2 rounded hover:bg-red-600"
+        >
+          Admin Panel ⚙️
+        </a>
+
+        <a
+          href="/login"
+          className="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Login / Signup 👤
+        </a>
+      </div>
 
       {/* 🔥 Subscription */}
       <div className="bg-zinc-900 p-4 mb-4 rounded">
-        {/* Subscription */}
-<div className="bg-zinc-900 p-4 mb-4 rounded">
-  <h2 className="font-semibold mb-2">Subscription</h2>
-
-  <p>Status: Active</p>
-  <p>Renewal: 30 Apr 2026</p>
-
-  {/* 🔥 ADD THIS PART */}
-  <div className="mt-3">
-    <button className="bg-green-500 px-4 py-2 mr-2 rounded">
-      Monthly ₹199
-    </button>
-
-    <button className="bg-blue-500 px-4 py-2 rounded">
-      Yearly ₹1999
-    </button>
-  </div>
-
-  <p className="mt-2 text-sm text-gray-400">
-    Participate in draws + support charity
-  </p>
-</div>
+        <h2 className="font-semibold mb-2">Subscription</h2>
         <p>Status: Active</p>
         <p>Renewal: 30 Apr 2026</p>
+
+        <div className="mt-3">
+          <button className="bg-green-500 px-4 py-2 mr-2 rounded">
+            Monthly ₹199
+          </button>
+
+          <button className="bg-blue-500 px-4 py-2 rounded">
+            Yearly ₹1999
+          </button>
+        </div>
+
+        <p className="mt-2 text-sm text-gray-400">
+          Participate in draws + support charity
+        </p>
       </div>
-      {/* Subscription Plan */}
-<div className="bg-zinc-900 p-4 mb-4 rounded">
-  <h2 className="font-semibold mb-2">Choose Subscription</h2>
-
-  <button className="bg-green-500 px-4 py-2 mr-2 rounded">
-    Monthly ₹199
-  </button>
-
-  <button className="bg-blue-500 px-4 py-2 rounded">
-    Yearly ₹1999
-  </button>
-
-  <p className="mt-2 text-sm text-gray-400">
-    Subscription enables participation in monthly draws and charity contribution.
-  </p>
-</div>
 
       {/* 🔥 Charity */}
       <div className="bg-zinc-900 p-4 mb-4 rounded">

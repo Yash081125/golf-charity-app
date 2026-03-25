@@ -38,13 +38,6 @@ export default function AuthPage() {
     }
   };
 
-  <a
-  href="/login"
-  className="bg-blue-500 px-4 py-2 rounded"
->
-  Login / Signup
-</a>
-
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center">
       <div className="bg-zinc-900 p-6 rounded w-80">
